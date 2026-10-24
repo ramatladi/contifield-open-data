@@ -1,0 +1,80 @@
+name: Publish pinned public world data
+on:
+  workflow_dispatch:
+concurrency:
+  group: publish-pinned-world-data
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  publish:
+    if: github.repository == 'ramatladi/contifield-open-data'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Refuse to replace an existing edition
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          DATASET_TAG=$(python3 -c "import json;print(json.load(open('data/world-sources.lock.json'))['datasetId'])")
+          if gh release view "$DATASET_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'This edition already exists. Publish a reviewed new dataset ID instead of replacing it.' >&2
+            exit 1
+          fi
+      - name: Build and verify the pinned public sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/contifield-release
+          python3 scripts/build-world-data.py \
+            --download \
+            --source-dir /tmp/contifield-source \
+            --base-output /tmp/contifield-generated \
+            --places-output /tmp/contifield-places \
+            --archive-output /tmp/contifield-release/contifield-world-data.tar.gz \
+            --receipt-output /tmp/contifield-release/build-receipt.json
+          python3 - <<'PY'
+          import importlib.util,json,os
+          from pathlib import Path
+          s=importlib.util.spec_from_file_location('builder','scripts/build-world-data.py');m=importlib.util.module_from_spec(s);s.loader.exec_module(m)
+          lock=json.loads(Path('data/world-sources.lock.json').read_text());receipt=json.loads(Path('/tmp/contifield-release/build-receipt.json').read_text())
+          m.verify_assets('/tmp/contifield-places',lock,receipt['archive']['manifestSha256'])
+          if receipt['countryCount']!=250 or receipt['places']['countries']!=250:raise SystemExit('Country universe mismatch')
+          archive=receipt['archive'];archive['url']='https://github.com/'+os.environ['GITHUB_REPOSITORY']+'/releases/download/'+lock['datasetId']+'/'+archive['fileName']
+          expected=lock.get('archive')
+          if not expected:raise SystemExit('Publication requires a reviewed archive pin')
+          for key in ['url','fileName','bytes','sha256','manifestSha256','bundleManifestSha256','generatedFiles']:
+              if archive.get(key)!=expected.get(key):raise SystemExit('Rebuilt archive differs from the reviewed pin: '+key+'. Preserve the reviewed bundle; do not silently update this lock.')
+          lock['archive']=archive
+          Path('/tmp/contifield-release/world-sources.lock.json').write_text(json.dumps(lock,indent=2)+'\n')
+          Path('/tmp/contifield-release/manifest.json').write_bytes(Path('/tmp/contifield-places/manifest.json').read_bytes())
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('## Public data build\n\nSource hashes are pinned; no private application data is included.\n\n```json\n'+json.dumps(receipt,indent=2)+'\n```\n')
+          PY
+      - name: Publish a new immutable-by-convention release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          DATASET_TAG=$(python3 -c "import json;print(json.load(open('data/world-sources.lock.json'))['datasetId'])")
+          gh release create "$DATASET_TAG" \
+            /tmp/contifield-release/contifield-world-data.tar.gz \
+            /tmp/contifield-release/build-receipt.json \
+            /tmp/contifield-release/world-sources.lock.json \
+            /tmp/contifield-release/manifest.json \
+            /tmp/contifield-source/allCountries-2026-10-24.zip \
+            /tmp/contifield-source/countryInfo.txt \
+            /tmp/contifield-source/admin1CodesASCII.txt \
+            /tmp/contifield-source/tzdata2026e.tar.gz \
+            /tmp/contifield-source/tzcode2026e.tar.gz \
+            SOURCE_NOTICES.md \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Public world data · $DATASET_TAG" \
+            --notes-file RELEASE_NOTES.md

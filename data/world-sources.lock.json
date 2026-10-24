@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "geonames-2026-10-24-v1",
+  "sourceDate": "2026-10-24",
+  "timezoneVersion": "2026e",
+  "supportedLocalYears": [
+    2020,
+    2035
+  ],
+  "timezoneGuardStart": "2019-12-30T00:00:00Z",
+  "timezoneGuardEndExclusive": "2036-01-03T00:00:00Z",
+  "geonames": {
+    "url": "https://download.geonames.org/export/dump/allCountries.zip",
+    "sha256": "4bc2e106b57fbc34d21f6b66e04fa4d585c74c85f6e5677fd1ec2b14937c3f43",
+    "bytes": 422497095,
+    "fileName": "allCountries-2026-10-24.zip",
+    "member": "allCountries.txt"
+  },
+  "countryInfo": {
+    "url": "https://download.geonames.org/export/dump/countryInfo.txt",
+    "sha256": "c55f638cfaafb4fe45a9aa15120a0f1f78e8a34a8e1847d7b9320cf740fbc9ab",
+    "bytes": 31690,
+    "fileName": "countryInfo.txt"
+  },
+  "admin1": {
+    "url": "https://download.geonames.org/export/dump/admin1CodesASCII.txt",
+    "sha256": "2e4867f5397acb056ea26377601b57af37cb4c81399770225018e9e439e91ad3",
+    "bytes": 151571,
+    "fileName": "admin1CodesASCII.txt"
+  },
+  "tzdata": {
+    "url": "https://data.iana.org/time-zones/releases/tzdata2026e.tar.gz",
+    "sha256": "b26882805f26aac59d5b222978e6580484b834ccdc98be89df2f05a6dc53a652",
+    "bytes": 481989,
+    "fileName": "tzdata2026e.tar.gz"
+  },
+  "tzcode": {
+    "url": "https://data.iana.org/time-zones/releases/tzcode2026e.tar.gz",
+    "sha256": "cc3d27ca2a0d8399504551b920970d80af83bfb9c216e8082a15491921935d54",
+    "bytes": 329138,
+    "fileName": "tzcode2026e.tar.gz"
+  },
+  "archive": {
+    "fileName": "contifield-world-data.tar.gz",
+    "bytes": 151253940,
+    "sha256": "4f1ad4825d6fdc5f6d55395adec07a6b6b11b6cb33b5e4ad7e38fe9cba97067d",
+    "manifestSha256": "f8643dc858d46717f966870dc37cdc0eef486bbe1de92608a582ced53b746805",
+    "bundleManifestSha256": "c2f5fcbde7bf23c12523ebfb31af3741a7315b5a24ee4e6d90a4b252b5b9af95",
+    "generatedFiles": [
+      {
+        "fileName": "world-countries.generated.json",
+        "bytes": 22162,
+        "sha256": "1b6f3dad4744627aa6349c5f416e29302b4e70d15385ed5ac0a6fa944fe20fcb"
+      },
+      {
+        "fileName": "world-timezones.generated.json",
+        "bytes": 89810,
+        "sha256": "d8b79cdb4e121b0d0cb08bac16e494090d1f4b40ae73bfbd355902b8d2936480"
+      }
+    ],
+    "url": "https://github.com/ramatladi/contifield-open-data/releases/download/geonames-2026-10-24-v1/contifield-world-data.tar.gz"
+  },
+  "attribution": {
+    "name": "GeoNames",
+    "url": "https://www.geonames.org/",
+    "license": "CC BY 4.0",
+    "licenseURL": "https://creativecommons.org/licenses/by/4.0/",
+    "changes": "Filtered to current source-listed populated-place classes, selected fields, normalized search keys, sorted and split into static search shards. No population threshold. No guarantee of completeness, current habitation or official timezone authority."
+  }
+}
