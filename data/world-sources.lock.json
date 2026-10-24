@@ -42,10 +42,10 @@
   },
   "archive": {
     "fileName": "contifield-world-data.tar.gz",
-    "bytes": 151253940,
-    "sha256": "4f1ad4825d6fdc5f6d55395adec07a6b6b11b6cb33b5e4ad7e38fe9cba97067d",
-    "manifestSha256": "f8643dc858d46717f966870dc37cdc0eef486bbe1de92608a582ced53b746805",
-    "bundleManifestSha256": "c2f5fcbde7bf23c12523ebfb31af3741a7315b5a24ee4e6d90a4b252b5b9af95",
+    "bytes": 151339851,
+    "sha256": "28a0fcd9ce9cf28775e0cbfd7eb3351ad079102c825927f8dad292f0bb031c88",
+    "manifestSha256": "2c6dc01a927964ee07da2e9a47c35d97fb8a165cb57f56014a9f8094602c0c37",
+    "bundleManifestSha256": "e1a64171a39a9c78fe6485b6e8eb3685d2923622810b7493b6c169d05b2be465",
     "generatedFiles": [
       {
         "fileName": "world-countries.generated.json",
